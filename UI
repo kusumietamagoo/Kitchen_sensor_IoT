@@ -1,0 +1,39 @@
+import serial
+import tkinter as tk
+from tkinter import ttk
+
+# Connect to the COM port (update COM3 as per your system)
+ser = serial.Serial('COM3', 9600)
+
+def read_data():
+    line = ser.readline().decode('utf-8').strip()
+    lines = line.split('\n')
+    for l in lines:
+        if "Temperature" in l:
+            temp_var.set(l)
+        elif "Humidity" in l:
+            hum_var.set(l)
+        elif "Gas" in l:
+            gas_var.set(l)
+        elif "PIR" in l:
+            pir_var.set(l)
+    window.after(1000, read_data)
+
+window = tk.Tk()
+window.title("Environmental Monitor")
+window.geometry("400x250")
+
+# Variables to display values
+temp_var = tk.StringVar()
+hum_var = tk.StringVar()
+gas_var = tk.StringVar()
+pir_var = tk.StringVar()
+
+# UI LabelS
+ttk.Label(window, textvariable=temp_var).pack(pady=5)
+ttk.Label(window, textvariable=hum_var).pack(pady=5)
+ttk.Label(window, textvariable=gas_var).pack(pady=5)
+ttk.Label(window, textvariable=pir_var).pack(pady=5)
+
+read_data()
+window.mainloop()
